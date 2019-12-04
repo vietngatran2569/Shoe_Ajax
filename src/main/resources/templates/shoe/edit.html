@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Edit Smartphone</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <style>
+        .modal-body input {
+            border-radius: 30px;
+        }
+
+        .exo {
+            position: relative;
+            left: 500px;
+            top: 200px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#editShoeForm').submit(function (event) {
+                var name = $('#name').val();
+                var size = $('#size').val();
+                var price = $('#price').val();
+                var product = $('#product').val();
+                var json = {"name": name, "size": size, "price": price, "product": product};
+                $.ajax({
+                    url: $("#editShoeForm").attr("action"),
+                    data: JSON.stringify(json),
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    },
+                    success: function (shoe) {
+                        var respContent = "";
+                        respContent += "<span class='success'>Shoe was edited: [";
+                        respContent += shoe.name + " : ";
+                        respContent += shoe.size + " : ";
+                        respContent += shoe.price + " : ";
+                        respContent += shoe.product + "]</span>";
+                        $("#sShoeFromResponse").html(respContent);
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="myModal">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit material</h4>
+            </div>
+            <div class="modal-body">
+                <div id="container">
+                    <div>
+                        <p style="color: red;font-family: 'DejaVu Sans Condensed'">Here you can edit Shoe info:</p>
+                        <div id="sShoeFromResponse"></div>
+                    </div>
+                    <form id="editShoeForm" th:object="${sShoe}">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>Name:</td>
+                                <td><input th:field="*{name}"/></td>
+                            </tr>
+                            <tr>
+                                <td>Size:</td>
+                                <td><input th:field="*{size}"/></td>
+                            </tr>
+                            <tr>
+                                <td>Price:</td>
+                                <td><input th:field="*{price}"/></td>
+                            </tr>
+                            <tr>
+                                <td>Product:</td>
+                                <td>
+                                    <select id="product">
+                                        <option value="Puma">Puma</option>
+                                        <option selected="selected" value="Adidas">Adidas</option>
+                                        <option value="Yeeze">Yeeze</option>
+                                        <option value="Ecco">Ecco</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="submit" value="Edit"/></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+<!--                    <a th:href="@{/shoes}">List</a>-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><a href="/shoes">Close</a></button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

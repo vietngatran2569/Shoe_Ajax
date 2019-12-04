@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>List Shoe</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let deleteLink = $("a:contains('Delete')");
+            $(deleteLink).click(function (event) {
+                $.ajax({
+                    url: $(event.target).attr("href"),
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    },
+                    success: function (shoe) {
+                        var respContent = "";
+                        var rowToDelete = $(event.target).closest("tr");
+                        rowToDelete.remove();
+                        respContent += "<span class='success'>Smartphone was deleted: [";
+                        respContent += shoe.name + " : ";
+                        respContent += shoe.size + " : ";
+                        respContent += shoe.price + " : ";
+                        respContent += shoe.product + "]</span>";
+                        $("#sPhoneFromResponse").html(respContent);
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    </script>
+    <style>
+        .container h1 {
+            font-family: Impact;
+            font-size: 50px;
+            color: blue;
+            letter-spacing: 0.3px;
+            text-shadow: 0 0 2px black;
+            padding-bottom: 0px;
+            border-bottom: 1px dotted blue;
+            margin: 10px;
+        }
+
+        .vertical-menu {
+            margin-top: 8px;
+            width: 170px; /* Set a width if you like */
+            height: 500px;
+            border-radius: 3px 0px 0px 3px;
+        }
+
+        .vertical-menu a {
+            background-color: #eee; /* Grey background color */
+            color: black; /* Black text color */
+            display: block; /* Make the links appear below each other */
+            padding: 12px; /* Add some padding */
+            text-decoration: none; /* Remove underline from links */
+        }
+
+        .vertical-menu a:hover {
+            background-color: #ccc; /* Dark grey background on mouse-over */
+        }
+
+        .vertical-menu a.active {
+            background-color:  #4CAF50; /* Add a green color to the "active/current" link */
+            color: white;
+        }
+
+        .ex a {
+            font-family: Impact;
+            color: blue;
+            font-size: 16px;
+        }
+        .ex2 a{
+            font-family: Impact;
+            color: blue;
+            font-size: 16px;
+        }
+
+        .ex .ex1 {
+            width: 200px;
+
+        }
+
+        .ex select {
+            width: 100px;
+            color: #cccccc;
+        }
+
+        .ex select:hover {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="height: auto">
+    <h1>All Shoes</h1>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="vertical-menu">
+                <a href="#" class="active">Home</a>
+                <a href="/shoes/create">Create new shoes</a>
+                <a href="#">Create new product</a>
+                <a href="#">List product</a>
+                <a href="#">Log in</a>
+                <a href="#">Log out</a>
+            </div>
+        </div>
+        <div class="col-sm-10 ex">
+            <div class="panel panel-default" style="padding: 5px;margin: 7px">
+                <div class="panel-body">
+                    <form class="ex2">
+                        <div class="form-inline">
+                            <a>Search by name:</a>
+                            <input name="s" type="text" style="border-radius: 30px"/>
+                            <input type="submit" value="Search" class="btn btn-primary btn-sm"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--    <a th:href="@{/shoes/create}">Create</a>-->
+            <div>
+                <p style="color: red;font-family: 'DejaVu Sans Condensed'">Here you can see a list of Shoes:</p>
+                <div id="sShoeFromResponse"></div>
+            </div>
+            <table border="1px" class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Product</th>
+                    <th>Action</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="shoe : ${allshoes}">
+                    <tr>
+                        <td th:text="${shoe.name}"></td>
+                        <td th:text="${shoe.size}"></td>
+                        <td th:text="${shoe.price}"></td>
+                        <td th:text="${shoe.product}"></td>
+                        <td>
+                            <a th:href="@{/shoes/edit/__${shoe.id}__}"><span class="glyphicon glyphicon-pencil"> Edit</span></a><br/>
+                        </td>
+                        <td>
+                            <a th:href="@{/shoes/delete/__${shoe.id}__}">Delete </a><span class="glyphicon glyphicon-trash"></span><br/>
+                        </td>
+                    </tr>
+                </th:block>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
